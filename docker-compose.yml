@@ -1,0 +1,20 @@
+version: "3.8"
+volumes:
+  db-data:
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - "./config/my.conf:/etc/mysql/conf.d/config-file.cnf"
+      - "./data:/var/lib/mysql:rw"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: track-issues-app
+    ports:
+      - 3306:3306
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
