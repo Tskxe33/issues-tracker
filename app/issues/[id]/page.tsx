@@ -18,8 +18,6 @@ const IssueDetailPage = async ({ params: { id } }: Props) => {
     },
   });
 
-  console.log(id);
-
   if (!issue) notFound();
 
   return (
