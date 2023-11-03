@@ -14,7 +14,7 @@ import Spinner from "@/app/components/Spinner";
 const NewIssuePage = () => {
   const {
     register,
-    formState: { errors, isValid },
+    formState: { errors },
     control,
     handleSubmit,
   } = useForm<IssueForm>({
