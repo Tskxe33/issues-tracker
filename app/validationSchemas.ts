@@ -5,4 +5,4 @@ export const createIssueSchema = z.object({
   description: z.string().min(1, "Description is requred").max(255),
 });
 
-export type IssueForm = z.infer<typeof createIssueSchema>;
+export type IssueFormData = z.infer<typeof createIssueSchema>;
