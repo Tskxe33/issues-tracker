@@ -1,22 +1,14 @@
 "use client";
+import { Skeleton } from "@/app/components";
 import { Issue, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Skeleton } from "@/app/components";
-import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => axios.get("/api/users").then((res) => res.data),
-    retry: 3,
-  });
+  const { data: users, error, isLoading } = useUsers();
 
   const router = useRouter();
 
@@ -24,7 +16,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 
   if (error) return null;
 
-  const onValueChange = async (value: string) => {
+  const assigneeIssue = async (value: string) => {
     try {
       await axios.patch("/api/issues/" + issue.id, {
         assignedToUserId: value === "Unassigned" ? null : value,
@@ -40,7 +32,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
     <>
       <Select.Root
         defaultValue={issue.assignedToUserId || "Unassigned"}
-        onValueChange={(value) => onValueChange(value)}
+        onValueChange={assigneeIssue}
       >
         <Select.Trigger placeholder="Assign..." />
         <Select.Content>
@@ -59,5 +51,13 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
     </>
   );
 };
+
+const useUsers = () =>
+  useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/users").then((res) => res.data),
+    retry: 3,
+    staleTime: 60 * 1000,
+  });
 
 export default AssigneeSelect;
